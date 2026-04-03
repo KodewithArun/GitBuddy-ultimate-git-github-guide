@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Professional Git & GitHub — Team Workflow Mastery. Developed by Arun Pandey Laudari.">
+<meta name="author" content="Arun Pandey Laudari">
+<title>Professional Git & GitHub — Team Workflow Mastery by Arun Pandey Laudari</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=Inter:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --surface2: #1f1f1f;
+    --border: #2a2a2a;
+    --border2: #383838;
+    --text: #e8e6e0;
+    --muted: #888;
+    --accent: #f0c060;
+    --accent2: #60d0b0;
+    --accent3: #e06060;
+    --accent4: #8090f0;
+    --code-bg: #111;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+  }
+
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: clamp(1rem, 2.5vw, 2rem) clamp(1rem, 3vw, 2.5rem);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .header-left h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.7rem;
+    color: var(--accent);
+    letter-spacing: -0.0em;
+  }
+
+  .header-left p {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .header-left {
+    flex: 1 1 320px;
+    min-width: 240px;
+  }
+
+  .nav-pills {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    flex: 1 1 420px;
+    justify-content: flex-end;
+  }
+
+  .nav-pill {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: none;
+  }
+
+  .nav-pill:hover, .nav-pill.active {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 100vh;
+  }
+
+  .sidebar {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 1.5rem 0;
+    position: sticky;
+    top: 73px;
+    height: calc(100vh - 73px);
+    overflow-y: auto;
+  }
+
+  .sidebar-section {
+    padding: 0.5rem 1.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .sidebar-label {
+    font-size: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    margin-top: 1rem;
+  }
+
+  .sidebar-link {
+    display: block;
+    padding: 5px 0;
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.15s;
+    cursor: pointer;
+  }
+
+  .sidebar-link:hover {
+    color: var(--text);
+  }
+
+  .sidebar-link.active {
+    color: var(--accent);
+  }
+
+  .main {
+    padding: clamp(1.25rem, 3vw, 2.5rem) clamp(1rem, 4vw, 3rem);
+    max-width: 900px;
+    width: 100%;
+  }
+
+  .section {
+    margin-bottom: 4rem;
+    scroll-margin-top: 90px;
+  }
+
+  .section-tag {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin-bottom: 0.75rem;
+  }
+
+  .tag-team { background: #1a2a1a; color: var(--accent2); border: 1px solid #2a4a2a; }
+  .tag-danger { background: #2a1a1a; color: var(--accent3); border: 1px solid #4a2a2a; }
+  .tag-workflow { background: #1a1a2a; color: var(--accent4); border: 1px solid #2a2a4a; }
+  .tag-advanced { background: #2a2a1a; color: var(--accent); border: 1px solid #4a3a1a; }
+  .tag-daily { background: #1a2020; color: #60c0b0; border: 1px solid #1a3a38; }
+
+  .section h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.02em;
+  }
+
+  .section-desc {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .scenario {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 1.25rem;
+    overflow: hidden;
+  }
+
+  .scenario-header {
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+
+  .scenario-header:hover {
+    background: var(--surface2);
+  }
+
+  .scenario-icon {
+    font-size: 20px;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .scenario-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+
+  .scenario-subtitle {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .scenario-toggle {
+    margin-left: auto;
+    color: var(--muted);
+    font-size: 18px;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+
+  .scenario.open .scenario-toggle {
+    transform: rotate(180deg);
+  }
+
+  .scenario-body {
+    display: none;
+    padding: 0 1.25rem 1.25rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .scenario.open .scenario-body {
+    display: block;
+  }
+
+  .step-list {
+    list-style: none;
+    margin: 1rem 0;
+  }
+
+  .step-list li {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    color: var(--accent);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+    margin: 0.75rem 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .c-green { color: #60c060; }
+  .c-yellow { color: var(--accent); }
+  .c-red { color: var(--accent3); }
+  .c-blue { color: var(--accent4); }
+  .c-teal { color: var(--accent2); }
+  .c-gray { color: var(--muted); }
+
+  .warn-box {
+    background: #1f1500;
+    border: 1px solid #3a2800;
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    font-size: 13px;
+    color: #c0a060;
+    margin: 0.75rem 0;
+  }
+
+  .danger-box {
+    background: #1f0000;
+    border: 1px solid #3a0000;
+    border-left: 3px solid var(--accent3);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    font-size: 13px;
+    color: #c06060;
+    margin: 0.75rem 0;
+  }
+
+  .tip-box {
+    background: #001a15;
+    border: 1px solid #003028;
+    border-left: 3px solid var(--accent2);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    font-size: 13px;
+    color: #50b090;
+    margin: 0.75rem 0;
+  }
+
+  .cmd {
+    font-family: 'IBM Plex Mono', monospace;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    color: var(--accent2);
+  }
+
+  .cheat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .cheat-card {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+  }
+
+  .cheat-card h4 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.05em;
+  }
+
+  .cheat-card pre {
+    background: transparent;
+    border: none;
+    padding: 0;
+    font-size: 12.5px;
+    margin: 0;
+  }
+
+  .rule-list {
+    list-style: none;
+    margin: 0.75rem 0;
+  }
+
+  .rule-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .rule-list li:last-child { border-bottom: none; }
+
+  .rule-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    margin-top: 8px;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: 'IBM Plex Mono', monospace;
+    margin-right: 4px;
+  }
+
+  .badge-ok { background: #0a2015; color: #50c080; border: 1px solid #1a4030; }
+  .badge-no { background: #200808; color: #e06060; border: 1px solid #401010; }
+  .badge-caution { background: #1f1500; color: #c0a060; border: 1px solid #3a2500; }
+
+  .flow-diagram {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+    padding: 1rem;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+
+  .flow-node {
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    border: 1px solid;
+  }
+
+  .flow-arrow {
+    color: var(--muted);
+    font-size: 16px;
+  }
+
+  .fn-main { background: #001f10; color: #50d080; border-color: #004a25; }
+  .fn-dev { background: #00101f; color: #5090d0; border-color: #002545; }
+  .fn-feat { background: #1a0020; color: #c070e0; border-color: #3a0050; }
+  .fn-hot { background: #1f0000; color: #e06060; border-color: #4a0000; }
+  .fn-rel { background: #1a1500; color: #c0a030; border-color: #3a3000; }
+
+  table.rules-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 0.75rem 0;
+  }
+
+  table.rules-table th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    text-align: left;
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--border2);
+  }
+
+  table.rules-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  table.rules-table tr:last-child td { border-bottom: none; }
+
+  img, video, canvas, svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  code, pre {
+    overflow-wrap: anywhere;
+  }
+
+  .toc-mobile {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .main { padding: 1.25rem; max-width: none; }
+    .header { align-items: flex-start; }
+    .header-left,
+    .nav-pills {
+      flex: 1 1 100%;
+    }
+    .nav-pills {
+      justify-content: flex-start;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 0.25rem;
+    }
+    .nav-pills::-webkit-scrollbar { display: none; }
+    .nav-pill { white-space: nowrap; }
+    .cheat-grid { grid-template-columns: 1fr; }
+    .toc-mobile { display: block; }
+    .scenario-header { align-items: flex-start; }
+    .scenario-toggle { margin-top: 0.1rem; }
+    .flow-diagram {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    table.rules-table {
+      display: block;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .header-left h1 {
+      font-size: 1.05rem;
+      line-height: 1.25;
+    }
+
+    .header-left p {
+      font-size: 11px;
+    }
+
+    .section h2 {
+      font-size: 1.35rem;
+    }
+
+    .section-desc {
+      font-size: 13px;
+    }
+
+    .scenario-header {
+      padding: 0.85rem 1rem;
+      gap: 0.75rem;
+    }
+
+    .scenario-body {
+      padding: 0 1rem 1rem;
+    }
+
+    .scenario-title {
+      font-size: 0.95rem;
+    }
+
+    pre {
+      padding: 0.85rem 1rem;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .cheat-card {
+      padding: 0.85rem;
+    }
+
+    .nav-pill {
+      font-size: 11px;
+      padding: 5px 10px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>Professional Git & GitHub</h1>
+    <p>Team Workflow Mastery — Real-world situations, professional protocols</p>
+  </div>
+  <nav class="nav-pills">
+    <a class="nav-pill" href="#setup">Setup</a>
+    <a class="nav-pill" href="#daily">Daily Work</a>
+    <a class="nav-pill" href="#branching">Branching</a>
+    <a class="nav-pill" href="#collaboration">Team Collab</a>
+    <a class="nav-pill" href="#recovery">Recovery</a>
+    <a class="nav-pill" href="#advanced">Advanced</a>
+    <a class="nav-pill" href="#cheatsheet">Cheat Sheet</a>
+  </nav>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Environment Setup</div>
+      <a class="sidebar-link" href="#s-setup-win-linux">Windows & Linux setup</a>
+      <a class="sidebar-link" href="#s-commit-types">Commit message types</a>
+      <a class="sidebar-link" href="#s-branch-deep">Branching deeper</a>
+
+      <div class="sidebar-label">Daily Work</div>
+      <a class="sidebar-link" href="#s-start">Starting a new task</a>
+      <a class="sidebar-link" href="#s-commit">Committing like a pro</a>
+      <a class="sidebar-link" href="#s-sync">Syncing with team</a>
+
+      <div class="sidebar-label">Branching</div>
+      <a class="sidebar-link" href="#s-branch">Branch strategy</a>
+      <a class="sidebar-link" href="#s-merge">Merge vs Rebase</a>
+      <a class="sidebar-link" href="#s-conflict">Resolving conflicts</a>
+
+      <div class="sidebar-label">Team Collaboration</div>
+      <a class="sidebar-link" href="#s-pr">Pull Requests</a>
+      <a class="sidebar-link" href="#s-review">Code review</a>
+      <a class="sidebar-link" href="#s-hotfix">Hotfixes</a>
+
+      <div class="sidebar-label">Recovery & Safety</div>
+      <a class="sidebar-link" href="#s-undo">Undoing mistakes</a>
+      <a class="sidebar-link" href="#s-stash">Stash & shelving</a>
+      <a class="sidebar-link" href="#s-reflog">Reflog recovery</a>
+
+      <div class="sidebar-label">Advanced</div>
+      <a class="sidebar-link" href="#s-rebase-i">Interactive rebase</a>
+      <a class="sidebar-link" href="#s-cherry">Cherry-pick</a>
+      <a class="sidebar-link" href="#s-tags">Tags & releases</a>
+
+      <div class="sidebar-label">Reference</div>
+      <a class="sidebar-link" href="#cheatsheet">Cheat sheet</a>
+      <a class="sidebar-link" href="#rules">Team rules</a>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- SETUP -->
+    <section class="section" id="setup">
+      <span class="section-tag tag-team">00 — Environment Setup</span>
+      <h2>Complete Setup for Windows and Linux</h2>
+      <p class="section-desc">Install Git correctly, configure identity, and use commit and branch conventions that work well in team repositories.</p>
+
+      <div class="scenario" id="s-setup-win-linux">
+        <div class="scenario-header" onclick="toggle(this)">
+          <div class="scenario-icon">🖥️</div>
+          <div>
+            <div class="scenario-title">Situation: Setting up Git on Windows or Linux</div>
+            <div class="scenario-subtitle">Install Git, verify it works, set your name and email, and connect to GitHub.</div>
+          </div>
+          <div class="scenario-toggle">▾</div>
+        </div>
+        <div class="scenario-body">
+          <table class="rules-table">
+            <tr><th>Step</th><th>Windows</th><th>Linux</th></tr>
+            <tr><td>Install Git</td><td>Install Git for Windows or use <code>winget install Git.Git</code></td><td>Use your package manager, for example <code>sudo apt install git</code></td></tr>
+            <tr><td>Check version</td><td colspan="2"><code>git --version</code></td></tr>
+            <tr><td>Name</td><td colspan="2"><code>git config --global user.name "Your Name"</code></td></tr>
+            <tr><td>Email</td><td colspan="2"><code>git config --global user.email "you@example.com"</code></td></tr>
+            <tr><td>Default branch</td><td colspan="2"><code>git config --global init.defaultBranch main</code></td></tr>
+            <tr><td>Line endings</td><td><code>git config --global core.autocrlf true</code></td><td><code>git config --global core.autocrlf input</code></td></tr>
+            <tr><td>SSH key</td><td colspan="2"><code>ssh-keygen -t ed25519 -C "you@example.com"</code></td></tr>
+          </table>
+
+<pre><span class="c-gray"># Verify the installation</span>
+<span class="c-green">git --version</span>
+<span class="c-green">git config --global --list</span>
+
+<span class="c-gray"># Clone using SSH</span>
+<span class="c-yellow">git clone git@github.com:org/repo.git</span>
+<span class="c-yellow">cd repo</span>
+<span class="c-teal">git status</span></pre>
+
+          <div class="tip-box">Use SSH for normal GitHub work. It is cleaner for team repositories and avoids repeated sign-in prompts.</div>
+          <div class="warn-box">Set <code>core.autocrlf</code> before your first commit if you switch between Windows and Linux.</div>
+        </div>
+      </div>
+
+      <div class="scenario" id="s-commit-types">
+        <div class="scenario-header" onclick="toggle(this)">
+          <div class="scenario-icon">🏷️</div>
+          <div>
+            <div class="scenario-title">Situation: Choosing the right commit message type</div>
+            <div class="scenario-subtitle">Use a type so teammates know what kind of change each commit contains.</div>
+          </div>
+          <div class="scenario-toggle">▾</div>
+        </div>
+        <div class="scenario-body">
+          <table class="rules-table">
+            <tr><th>Type</th><th>When to use</th><th>Example</th></tr>
+            <tr><td><code>feat</code></td><td>New feature or behavior</td><td><code>feat(auth): add password reset flow</code></td></tr>
+            <tr><td><code>fix</code></td><td>Bug fix</td><td><code>fix(api): prevent null crash on login</code></td></tr>
+            <tr><td><code>refactor</code></td><td>Structure change without behavior change</td><td><code>refactor(auth): simplify token validation</code></td></tr>
+            <tr><td><code>docs</code></td><td>Documentation only</td><td><code>docs(setup): add Linux install steps</code></td></tr>
+            <tr><td><code>test</code></td><td>Tests added or updated</td><td><code>test(auth): cover expired token handling</code></td></tr>
+            <tr><td><code>chore</code></td><td>Tooling or maintenance</td><td><code>chore: update eslint and prettier</code></td></tr>
+            <tr><td><code>perf</code></td><td>Performance improvement</td><td><code>perf(cache): reduce dashboard query cost</code></td></tr>
+            <tr><td><code>ci</code></td><td>Build or pipeline changes</td><td><code>ci: add test job to GitHub Actions</code></td></tr>
+          </table>
+
+<pre><span class="c-gray"># Recommended format</span>
+<span class="c-yellow">type(scope): short summary</span>
+
+<span class="c-gray"># Good examples</span>
+<span class="c-green">feat(auth): add refresh token rotation</span>
+<span class="c-green">fix(ui): keep login button disabled while loading</span>
+<span class="c-green">docs(setup): explain Windows setup steps</span></pre>
+
+          <div class="tip-box"><code>feat</code> adds behavior, <code>fix</code> corrects behavior, and <code>refactor</code> changes structure only.</div>
+          <div class="warn-box">If one commit does more than one job, split it. Small commits are easier to review and revert.</div>
+        </div>
+      </div>
+
+      <div class="scenario" id="s-branch-deep">
+        <div class="scenario-header" onclick="toggle(this)">
+          <div class="scenario-icon">🌲</div>
+          <div>
+            <div class="scenario-title">Situation: Creating branches with a deeper structure</div>
+            <div class="scenario-subtitle">Use a hierarchy so large projects stay organized and easy to review.</div>
+          </div>
+          <div class="scenario-toggle">▾</div>
+        </div>
+        <div class="scenario-body">
+          <div class="flow-diagram">
+            <span class="flow-node fn-main">main</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-node fn-feat">feature/auth</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-node fn-feat">feature/auth/jwt</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-node fn-feat">feature/auth/jwt/refresh-token</span>
+          </div>
+
+          <ul class="step-list">
+            <li><div class="step-num">1</div><div>Start from an updated base branch, usually <code>main</code>.</div></li>
+            <li><div class="step-num">2</div><div>Create a top-level category first, then add deeper levels only if they help the team.</div></li>
+            <li><div class="step-num">3</div><div>Keep the name readable: category / area / specific task.</div></li>
+          </ul>
+
+<pre><span class="c-gray"># Sync before creating a branch</span>
+<span class="c-green">git switch main</span>
+<span class="c-green">git pull --rebase origin main</span>
+
+<span class="c-gray"># Simple branch</span>
+<span class="c-yellow">git switch -c feature/login-form</span>
+
+<span class="c-gray"># Deeper branch name</span>
+<span class="c-yellow">git switch -c feature/auth/jwt-refresh-token</span>
+
+<span class="c-gray"># Push and set upstream tracking</span>
+<span class="c-blue">git push -u origin feature/auth/jwt-refresh-token</span></pre>
+
+          <table class="rules-table">
+            <tr><th>Part</th><th>Meaning</th><th>Example</th></tr>
+            <tr><td>category</td><td>Type of work</td><td><code>feature</code>, <code>bugfix</code>, <code>hotfix</code></td></tr>
+            <tr><td>area</td><td>Subsystem or product area</td><td><code>auth</code>, <code>billing</code>, <code>ui</code></td></tr>
+            <tr><td>task</td><td>Specific change</td><td><code>jwt-refresh-token</code>, <code>login-form</code></td></tr>
+          </table>
+
+          <div class="tip-box">Use deeper branch names only when they improve clarity. Small tasks usually need only one level.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DAILY WORK -->
+    <section class="section" id="daily">
+      <span class="section-tag tag-daily">01 — Daily Workflow</span>
+      <h2>The Professional Daily Routine</h2>
+      <p class="section-desc">How a senior developer actually starts, works, and closes out each task in a team environment. This is the foundation everything else builds on.</p>
+
+      <div class="scenario" id="s-start">
+        <div class="scenario-header" onclick="toggle(this)">
+          <div class="scenario-icon">🌅</div>
+          <div>
+            <div class="scenario-title">Situation: Starting a new task or feature</div>
+            <div class="scenario-subtitle">You've been assigned a ticket. What's the very first thing you do?</div>
+          </div>
+          <div class="scenario-toggle">▾</div>
+        </div>
+        <div class="scenario-body">
+          <p style="font-size:14px; color: var(--muted); margin-bottom:1rem;">Never work on the main branch. Always branch from an up-to-date copy of main.</p>
+          <ul class="step-list">
+            <li><div class="step-num">1</div><div><strong>Sync first.</strong> Before anything else, pull the latest changes from the remote so your branch starts fresh.</div></li>
+            <li><div class="step-num">2</div><div><strong>Create a branch</strong> named after the ticket or feature. Use a consistent naming convention your team agrees on.</div></li>
+            <li><div class="step-num">3</div><div><strong>Do your work</strong> in small, logical commits. Don't wait until you're done to commit.</div></li>
+            <li><div class="step-num">4</div><div><strong>Push regularly</strong> so your work is backed up and visible to the team — even before it's done.</div></li>
+          </ul>
+<pre><span class="c-gray"># Step 1: Always start by syncing</span>
+<span class="c-green">git switch main</span>
+<span class="c-green">git pull origin main</span>
+
+<span class="c-gray"># Step 2: Create your feature branch</span>
+<span class="c-yellow">git switch -c feature/user-authentication</span>
+<span class="c-gray"># or for a bugfix:</span>
+<span class="c-yellow">git switch -c bugfix/fix-login-null-error</span>
+
+<span class="c-gray"># Step 3: Do work, commit often</span>
+<span class="c-teal">git add src/auth.py</span>
+<span class="c-teal">git commit -m "Add JWT token generation"</span>
+
+<span class="c-gray"># Step 4: Push to remote regularly</span>
+<span class="c-blue">git push -u origin feature/user-authentication</span>
+<span class="c-gray"># after first push, just use:</span>
+<span class="c-blue">git push</span></pre>
+          <div class="tip-box">Branch naming conventions matter. Common formats: <code>feature/TICKET-123-short-description</code>, <code>bugfix/issue-description</code>, <code>hotfix/critical-fix-name</code>. Pick one and stick to it as a team.</div>
+        </div>
+      </div>
+
+      <div class="scenario" id="s-commit">
+        <div class="scenario-header" onclick="toggle(this)">
+          <div class="scenario-icon">📝</div>
+          <div>
+            <div class="scenario-title">Situation: Writing commits like a senior developer</div>
+            <div class="scenario-subtitle">Your commits are permanent documentation. Bad messages haunt teams for years.</div>
+          </div>
+          <div class="scenario-toggle">▾</div>
+        </div>
+        <div class="scenario-body">
+          <table class="rules-table">
+            <tr><th>❌ Bad</th><th>✅ Professional</th></tr>
+            <tr><td style="color: var(--accent3);">fix</td><td style="color: var(--accent2);">Fix null pointer exception in payment validator</td></tr>
+            <tr><td style="color: var(--accent3);">update</td><td style="color: var(--accent2);">Update session timeout from 30min to 60min per UX request</td></tr>
+            <tr><td style="color: var(--accent3);">WIP</td><td style="color: var(--accent2);">Add draft of OAuth integration (tests pending)</td></tr>
+            <tr><td style="color: var(--accent3);">asdfgh</td><td style="color: var(--accent2);">Remove deprecated API v1 endpoints</td></tr>
+            <tr><td style="color: var(--accent3);">changes</td><td style="color: var(--accent2);">Refactor user model to support multiple email addresses</td></tr>
+          </table>
+          <p style="font-size:14px; margin-top:1rem; margin-bottom:0.5rem;">The professional format for multi-line commits:</p>
+<pre><span class="c-gray"># Open editor for multi-line commit:</span>
+<span class="c-green">git commit</span>
+
+<span class="c-gray"># Your editor opens — write this structure:</span>
+
+<span class="c-yellow">Add JWT authentication for API endpoints</span>
+<span class="c-gray">(blank line here)</span>
+<span class="c-teal">Replaced session-based auth with JWT because mobile clients</span>
+<span class="c-teal">don't handle cookies reliably. Tokens expire in 24h.</span>
+<span class="c-teal">Refresh token stored in httpOnly cookie for security.</span>
+<span class="c-gray">(blank line)</span>
+<span class="c-blue">Closes #42</span>
+<span class="c-blue">Co-authored-by: Priya Sharma &lt;priya@company.com&gt;</span></pre>
+          <div class="warn-box">Rule: Subject line max 50 characters. Use imperative mood ("Add", "Fix", "Remove", not "Added", "Fixed", "Removed"). Explain WHY in the body, not just WHAT.</div>
+        </div>
+      </div>
+
+      <div class="scenario" id="s-sync">
+        <div class="scenario-header" onclick="toggle(this)">
+          <div class="scenario-icon">🔄</div>
+          <div>
+            <div class="scenario-title">Situation: Syncing when the team keeps pushing to main</div>
+            <div class="scenario-subtitle">You've been working on your branch for 3 days. Main has moved on. How do you catch up?</div>
+          </div>
+          <div class="scenario-toggle">▾</div>
+        </div>
+        <div class="scenario-body">
+          <p style="font-size:14px; color: var(--muted); margin-bottom:1rem;">This happens constantly in team environments. The longer you wait, the worse the conflicts.</p>
+          <ul class="step-list">
+            <li><div class="step-num">1</div><div>Fetch the latest changes from remote (doesn't modify your working files)</div></li>
+            <li><div class="step-num">2</div><div>Rebase your branch on top of the updated main — this replays your commits cleanly</div></li>
+            <li><div class="step-num">3</div><div>Force-push (safely) since rebase rewrites your branch history</div></li>
+          </ul>
+<pre><span class="c-gray"># You're on feature/my-feature</span>
+<span class="c-green">git fetch origin</span>
+
+<span class="c-gray"># Rebase your work on top of the latest main</span>
+<span class="c-yellow">git rebase origin/main</span>
+
+<span class="c-gray"># If conflicts arise, resolve them, then:</span>
+<span class="c-teal">git add &lt;resolved-files&gt;</span>
+<span class="c-teal">git rebase --continue</span>
+
+<span class="c-gray"># Force push (only safe because it's YOUR personal branch)</span>
+<span class="c-blue">git push --force-with-lease</span></pre>
+          <div class="warn-box"><strong>--force-with-lease</strong> vs <strong>--force</strong>: Always use <code>--force-with-lease</code>. It refuses to overwrite if someone else has pushed to your branch since your last fetch. Much safer than bare <code>--force</code>.</div>
+          <div class="danger-box">⚠️ Never force-push to main or any shared branch. Only force-push to your own personal feature branches.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BRANCHING -->
+    <section class="section" id="branching">
+      <span class="section-tag tag-workflow">02 — Branching Strategy</span>
+      <h2>Branching Like a Professional</h2>
+      <p class="section-desc">The branch model your team uses determines how smoothly code flows from development to production. Here are the three most common setups.</p>
+
+      <div class="scenario" id="s-branch">
+        <div class="scenario-header" onclick="toggle(this)">
+          <div class="scenario-icon">🌿</div>
+          <div>
+            <div class="scenario-title">Situation: Understanding which workflow your team uses</div>
+            <div class="scenario-subtitle">GitHub Flow vs Git Flow vs Trunk-based — when to use which</div>
+          </div>
+          <div class="scenario-toggle">▾</div>
+        </div>
+        <div class="scenario-body">
+          <p style="font-size:14px; font-weight:500; margin-bottom:0.5rem; color:var(--accent);">GitHub Flow — most common for web apps and startups</p>
+          <div class="flow-diagram">
+            <span class="flow-node fn-main">main</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-node fn-feat">feature/login</span>
+            <span class="flow-arrow">→ PR →</span>
+            <span class="flow-node fn-main">main</span>
+            <span class="flow-arrow">→ deploy</span>
+          </div>
+          <p style="font-size:13px; color:var(--muted); margin-bottom:1rem;">Rule: <code>main</code> is always deployable. All work happens in branches. PR → Review → Merge → Deploy immediately.</p>
+
+          <p style="font-size:14px; font-weight:500; margin-bottom:0.5rem; color:var(--accent4);">Git Flow — for versioned software with scheduled releases</p>
+          <div class="flow-diagram">
+            <span class="flow-node fn-main">main</span>
+            <span class="flow-arrow">↑</span>
+            <span class="flow-node fn-rel">release/v2.0</span>
+            <span class="flow-arrow">↑</span>
+            <span class="flow-node fn-dev">develop</span>
+            <span class="flow-arrow">←</span>
+            <span class="flow-node fn-feat">feature/*</span>
+          </div>
+          <div class="flow-diagram">
+            <span class="flow-node fn-hot">hotfix/*</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-node fn-main">main</span>
+            <span class="flow-arrow">+</span>
+            <span class="flow-node fn-dev">develop</span>
+          </div>
+          <p style="font-size:13px; color:var(--muted); margin-bottom:1rem;">Use when: mobile apps, desktop software, open-source libraries with versioned releases.</p>
+
+          <table class="rules-table">
+            <tr><th>Workflow</th><th>Branches</th><th>Best for</th><th>Release cadence</th></tr>
+            <tr><td>GitHub Flow</td><td>main + feature branches</td><td>Web apps, SaaS</td><td>Multiple times/day</td></tr>
+            <tr><td>Git Flow</td><td>main, develop, feature, release, hotfix</td><td>Mobile, versioned software</td><td>Scheduled releases</td></tr>
+            <tr><td>Trunk-based</td><td>main only (tiny branches &lt;1 day)</td><td>Google/Facebook scale</td><td>Continuous</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="scenario" id="s-merge">
+        <div class="scenario-header" onclick="toggle(this)">
+          <div class="scenario-icon">🔀</div>
+          <div>
+            <div class="scenario-title">Situation: Merge vs Rebase — making the right choice</div>
+            <div class="scenario-subtitle">Both integrate branches. The choice affects your history's readability forever.</div>
+          </div>
+          <div class="scenario-toggle">▾</div>
+        </div>
+        <div class="scenario-body">
+<pre><span class="c-gray"># MERGE — preserves true history, creates a merge commit</span>
+<span class="c-green">git switch main</span>
+<span class="c-green">git merge feature/user-auth</span>
+<span class="c-gray"># History: A - B - C - M  (M has two parents)</span>
+<span class="c-gray">#                  \   /</span>
+<span class="c-gray">#                   D-E</span>
+
+<span class="c-gray"># REBASE — rewrites history to be linear, no merge commit</span>
+<span class="c-yellow">git switch feature/user-auth</span>
+<span class="c-yellow">git rebase main</span>
+<span class="c-gray"># History: A - B - C - D' - E'  (clean line)</span></pre>
+
+          <table class="rules-table">
+            <tr><th>Use Merge when...</th><th>Use Rebase when...</th></tr>
+            <tr><td>Merging a finished feature PR into main</td><td>Updating your feature branch with latest main</td></tr>
+            <tr><td>You want to preserve the full context</td><td>Cleaning up local commits before opening a PR</td></tr>
+            <tr><td>Working with shared/public branches</td><td>Working on private, not-yet-pushed branches</td></tr>
+            <tr><td>The branch divergence is meaningful</td><td>You want a linear, readable history</td></tr>
+          </table>
+          <div class="danger-box">The Golden Rule: NEVER rebase commits that are already on the shared remote and other people may have pulled. You will rewrite history out from under them.</div>
+        </div>
+      </div>
+
+      <div class="scenario" id="s-conflict">
+        <div class="scenario-header" onclick="toggle(this)">
+          <div class="scenario-icon">⚔️</div>
+          <div>
+            <div class="scenario-title">Situation: Merge conflict — two developers changed the same lines</div>
+            <div class="scenario-subtitle">Conflicts are normal. The professional response is calm and systematic.</div>
+          </div>
+          <div class="scenario-toggle">▾</div>
+        </div>
+        <div class="scenario-body">
+          <ul class="step-list">
+            <li><div class="step-num">1</div><div>Attempt the merge — Git will tell you which files conflict</div></li>
+            <li><div class="step-num">2</div><div>Open each conflicted file — find the conflict markers</div></li>
+            <li><div class="step-num">3</div><div>Decide: keep yours, keep theirs, or combine intelligently</div></li>
+            <li><div class="step-num">4</div><div>Remove all conflict markers, save the file</div></li>
+            <li><div class="step-num">5</div><div>Stage the resolved file and complete the merge</div></li>
+          </ul>
+<pre><span class="c-gray"># Conflict markers look like this in your file:</span>
+<span class="c-red">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>
+<span class="c-teal">DEBUG = False   # your version (current branch)</span>
+<span class="c-red">=======</span>
+<span class="c-yellow">DEBUG = True    # incoming version (being merged)</span>
+<span class="c-red">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/dev-settings</span>
+
+<span class="c-gray"># After resolving (edit the file to correct state):</span>
+<span class="c-green">git add config.py</span>
+<span class="c-green">git commit</span>    <span class="c-gray"># completes the merge</span>
+
+<span class="c-gray"># To abort the merge entirely and go back:</span>
+<span class="c-blue">git merge --abort</span>
+
+<span class="c-gray"># Use VS Code's merge editor (excellent for conflicts):</span>
+<span class="c-blue">code .</span>  <span class="c-gray"># conflicts highlighted, Accept/Both/Ignore buttons</span></pre>
+          <div class="tip-box">Best practice: Before a merge, talk to the other developer. Understanding WHY they made their change makes the resolution obvious and correct.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COLLABORATION -->
+    <section class="section" id="collaboration">
+      <span class="section-tag tag-team">03 — Team Collaboration</span>
+      <h2>Working Professionally in a Team</h2>
+      <p class="section-desc">The PR workflow, code review culture, and handling production emergencies. This is where Git skills translate into team credibility.</p>
+
+      <div class="scenario" id="s-pr">
+        <div class="scenario-header" onclick="toggle(this)">
+          <div class="scenario-icon">🔁</div>
+          <div>
+            <div class="scenario-title">Situation: Opening a Pull Request the right way</div>
+            <div class="scenario-subtitle">Your PR is your professional pitch. A bad PR wastes reviewers' time and slows the team.</div>
+          </div>
+          <div class="scenario-toggle">▾</div>
+        </div>
+        <div class="scenario-body">
+<pre><span class="c-gray"># 1. Make sure your branch is up to date before opening PR</span>
+<span class="c-green">git fetch origin</span>
+<span class="c-green">git rebase origin/main</span>
+
+<span class="c-gray"># 2. Push your branch</span>
+<span class="c-blue">git push -u origin feature/user-auth</span>
+
+<span class="c-gray"># 3. Open PR on GitHub — use this description template:</span></pre>
+
+          <div style="background:var(--code-bg); border:1px solid var(--border); border-radius:8px; padding:1rem; margin:0.75rem 0; font-size:13px; font-family:'IBM Plex Mono', monospace; line-height:1.8;">
+            <span class="c-yellow">## What this PR does</span><br>
+            <span class="c-teal">Adds JWT-based authentication to all API endpoints.</span><br><br>
+            <span class="c-yellow">## Why</span><br>
+            <span class="c-teal">Session auth breaks with mobile clients. Fixes #42.</span><br><br>
+            <span class="c-yellow">## Changes made</span><br>
+            <span class="c-teal">- Added JWTMiddleware to express app</span><br>
+            <span class="c-teal">- Token expiry: 24h access, 7d refresh</span><br>
+            <span class="c-teal">- Updated all protected routes</span><br><br>
+            <span class="c-yellow">## Testing</span><br>
+            <span class="c-teal">- All existing tests pass</span><br>
+            <span class="c-teal">- Added 12 new tests in auth.test.js</span><br><br>
+            <span class="c-yellow">## Screenshots (if UI change)</span><br>
+            <span class="c-gray">[attach screenshot]</span>
+          </div>
+
+          <ul class="rule-list">
+            <li><div class="rule-dot"></div><div>Keep PRs small — under 400 lines ideally. Big PRs get rubber-stamped or take days to review.</div></li>
+            <li><div class="rule-dot"></div><div>Open a "Draft PR" early if you want feedback before it's done.</div></li>
+            <li><div class="rule-dot"></div><div>Assign reviewers — don't just open it and hope someone notices.</div></li>
+            <li><div class="rule-dot"></div><div>Link the issue with <code>Closes #42</code> — it auto-closes when merged.</div></li>
+            <li><div class="rule-dot"></div><div>Add a self-review first — read your own diff before asking others to.</div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="scenario" id="s-review">
+        <div class="scenario-header" onclick="toggle(this)">
+          <div class="scenario-icon">🔍</div>
+          <div>
+            <div class="scenario-title">Situation: Doing code review professionally</div>
+            <div class="scenario-subtitle">How you review code reflects your seniority. Aggressive reviews kill team morale. Rubber-stamping kills code quality.</div>
+          </div>
+          <div class="scenario-toggle">▾</div>
+        </div>
+        <div class="scenario-body">
+          <p style="font-size:14px; margin-bottom:1rem; color:var(--muted);">As a <strong style="color:var(--text)">reviewer</strong>:</p>
+          <ul class="rule-list">
+            <li><div class="rule-dot"></div><div><span class="badge badge-ok">DO</span> Ask questions: "Could we use a constant here for readability?"</div></li>
+            <li><div class="rule-dot"></div><div><span class="badge badge-ok">DO</span> Be specific: "Line 42: null check missing if user is undefined"</div></li>
+            <li><div class="rule-dot"></div><div><span class="badge badge-ok">DO</span> Distinguish blocking vs non-blocking: prefix with "nit:" for minor style issues</div></li>
+            <li><div class="rule-dot"></div><div><span class="badge badge-ok">DO</span> Approve when it's good enough — don't chase perfection</div></li>
+            <li><div class="rule-dot"></div><div><span class="badge badge-no">NEVER</span> "This is wrong" without explanation</div></li>
+            <li><div class="rule-dot"></div><div><span class="badge badge-no">NEVER</span> Rewrite the PR yourself in comments</div></li>
+            <li><div class="rule-dot"></div><div><span class="badge badge-no">NEVER</span> Let a PR sit for more than 24 hours unreviewed</div></li>
+          </ul>
+          <p style="font-size:14px; margin:1rem 0 0.75rem; color:var(--muted);">As the <strong style="color:var(--text)">PR author</strong>:</p>
+          <ul class="rule-list">
+            <li><div class="rule-dot"></div><div>Respond to every comment, even if just "Fixed" or "Agreed, keeping as-is because..."</div></li>
+            <li><div class="rule-dot"></div><div>Don't argue style — either agree or escalate to team discussion</div></li>
+            <li><div class="rule-dot"></div><div>When you push new commits in response to review, comment "Addressed in abc1234"</div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="scenario" id="s-hotfix">
+        <div class="scenario-header" onclick="toggle(this)">
+          <div class="scenario-icon">🚨</div>
+          <div>
+            <div class="scenario-title">Situation: Critical bug in production right now</div>
+            <div class="scenario-subtitle">Production is down at 2am. You need to fix and deploy in under 30 minutes. Exact steps.</div>
+          </div>
+          <div class="scenario-toggle">▾</div>
+        </div>
+        <div class="scenario-body">
+<pre><span class="c-gray"># 1. Drop everything — switch to main and pull LATEST production code</span>
+<span class="c-green">git switch main</span>
+<span class="c-green">git pull origin main</span>
+
+<span class="c-gray"># 2. Create a hotfix branch from main (NOT develop)</span>
+<span class="c-red">git switch -c hotfix/fix-payment-crash</span>
+
+<span class="c-gray"># 3. Fix the bug. Keep it MINIMAL — only fix the crash, nothing else</span>
+<span class="c-gray"># ... make your fix ...</span>
+<span class="c-teal">git add payment.py</span>
+<span class="c-teal">git commit -m "Fix divide-by-zero crash in payment calculator</span>
+<span class="c-teal">
+<span class="c-teal">Amount field was not validated before division.</span>
+<span class="c-teal">Added null/zero check. Fixes #PROD-2847"</span>
+
+<span class="c-gray"># 4. Push and open PR — or if you have emergency merge rights, direct merge</span>
+<span class="c-blue">git push -u origin hotfix/fix-payment-crash</span>
+
+<span class="c-gray"># 5. After merging to main AND tagging a release — also merge to develop</span>
+<span class="c-gray"># So the fix is also in the next scheduled release</span>
+<span class="c-green">git switch develop</span>
+<span class="c-green">git merge hotfix/fix-payment-crash</span>
+
+<span class="c-gray"># 6. Tag the hotfix release</span>
+<span class="c-yellow">git tag -a v1.2.1 -m "Hotfix: payment crash fix"</span>
+<span class="c-yellow">git push origin v1.2.1</span></pre>
+          <div class="danger-box">Hotfix discipline: Only fix the exact bug. Resist the urge to "clean up" other things while you're there. Every extra change is another risk during a production incident.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RECOVERY -->
+    <section class="section" id="recovery">
+      <span class="section-tag tag-danger">04 — Recovery & Safety</span>
+      <h2>Undoing Mistakes Without Panic</h2>
+      <p class="section-desc">Every developer breaks things. Seniors don't panic because they know exactly how to recover. Here's your complete recovery toolkit.</p>
+
+      <div class="scenario" id="s-undo">
+        <div class="scenario-header" onclick="toggle(this)">
+          <div class="scenario-icon">↩️</div>
+          <div>
+            <div class="scenario-title">Situation: I committed something wrong — how do I undo it?</div>
+            <div class="scenario-subtitle">The answer depends on whether you've pushed yet. Choose the right tool.</div>
+          </div>
+          <div class="scenario-toggle">▾</div>
+        </div>
+        <div class="scenario-body">
+          <table class="rules-table">
+            <tr><th>Scenario</th><th>Command</th><th>Safe on shared branch?</th></tr>
+            <tr>
+              <td>Didn't commit yet, want to unstage</td>
+              <td><code>git restore --staged &lt;file&gt;</code></td>
+              <td><span class="badge badge-ok">Yes</span></td>
+            </tr>
+            <tr>
+              <td>Didn't commit, want to discard file changes</td>
+              <td><code>git restore &lt;file&gt;</code></td>
+              <td><span class="badge badge-ok">Yes</span></td>
+            </tr>
+            <tr>
+              <td>Last commit: fix message only</td>
+              <td><code>git commit --amend -m "New message"</code></td>
+              <td><span class="badge badge-no">Not pushed</span></td>
+            </tr>
+            <tr>
+              <td>Last commit: undo, keep changes staged</td>
+              <td><code>git reset --soft HEAD~1</code></td>
+              <td><span class="badge badge-no">Not pushed</span></td>
+            </tr>
+            <tr>
+              <td>Last commit: undo, unstage changes</td>
+              <td><code>git reset HEAD~1</code></td>
+              <td><span class="badge badge-no">Not pushed</span></td>
+            </tr>
+            <tr>
+              <td>Commit already pushed to shared branch</td>
+              <td><code>git revert &lt;hash&gt;</code></td>
+              <td><span class="badge badge-ok">Yes — safe</span></td>
+            </tr>
+            <tr>
+              <td>Entire last commit: destroy it completely</td>
+              <td><code>git reset --hard HEAD~1</code></td>
+              <td><span class="badge badge-no">Never on shared</span></td>
+            </tr>
+          </table>
+<pre><span class="c-gray"># The safe undo for anything already pushed to shared branches:</span>
+<span class="c-green">git revert a3f2b1c</span>
+<span class="c-gray"># Creates a NEW commit that undoes the bad commit</span>
+<span class="c-gray"># History is preserved. Safe for teammates.</span>
+
+<span class="c-gray"># Accidentally committed to main directly?</span>
+<span class="c-gray"># (Before pushing)</span>
+<span class="c-yellow">git reset --soft HEAD~1</span>     <span class="c-gray"># undo commit, keep changes staged</span>
+<span class="c-yellow">git switch -c feature/my-branch</span>   <span class="c-gray"># now put it on a branch</span>
+<span class="c-yellow">git commit -m "Proper commit message"</span></pre>
+        </div>
+      </div>
+
+      <div class="scenario" id="s-stash">
+        <div class="scenario-header" onclick="toggle(this)">
+          <div class="scenario-icon">📦</div>
+          <div>
+            <div class="scenario-title">Situation: Need to switch context but have unfinished work</div>
+            <div class="scenario-subtitle">"Urgent bug just came in but I'm mid-feature and can't commit yet." Use git stash.</div>
+          </div>
+          <div class="scenario-toggle">▾</div>
+        </div>
+        <div class="scenario-body">
+<pre><span class="c-gray"># Save your work-in-progress (WIP) temporarily</span>
+<span class="c-yellow">git stash push -u -m "WIP: implementing OAuth, half done"</span>
+<span class="c-gray"># -u includes untracked new files</span>
+
+<span class="c-gray"># Now your working directory is clean — handle the urgent bug</span>
+<span class="c-green">git switch main</span>
+<span class="c-green">git switch -c hotfix/urgent-fix</span>
+<span class="c-gray"># ... fix, commit, push, open PR ...</span>
+
+<span class="c-gray"># Come back to your stashed work</span>
+<span class="c-blue">git switch feature/oauth</span>
+<span class="c-blue">git stash list</span>
+<span class="c-gray"># stash@{0}: WIP: implementing OAuth, half done</span>
+
+<span class="c-blue">git stash pop</span>  <span class="c-gray"># apply latest stash AND remove it from stash list</span>
+<span class="c-gray"># or</span>
+<span class="c-blue">git stash apply stash@{0}</span>  <span class="c-gray"># apply but keep in stash list</span>
+
+<span class="c-gray"># Clean up stashes you no longer need</span>
+<span class="c-red">git stash drop stash@{0}</span>
+<span class="c-red">git stash clear</span>  <span class="c-gray"># delete ALL stashes</span></pre>
+          <div class="warn-box">Stashes are local only — not pushed to GitHub. Don't stash things and then forget about them. Name your stashes clearly.</div>
+        </div>
+      </div>
+
+      <div class="scenario" id="s-reflog">
+        <div class="scenario-header" onclick="toggle(this)">
+          <div class="scenario-icon">🆘</div>
+          <div>
+            <div class="scenario-title">Situation: I accidentally deleted a branch / lost commits</div>
+            <div class="scenario-subtitle">git reflog is your emergency time machine. Almost nothing is truly lost.</div>
+          </div>
+          <div class="scenario-toggle">▾</div>
+        </div>
+        <div class="scenario-body">
+<pre><span class="c-gray"># Show everything HEAD has ever pointed to</span>
+<span class="c-yellow">git reflog</span>
+<span class="c-gray"># Output:</span>
+<span class="c-teal">a3f2b1c HEAD@{0}: reset: moving to HEAD~2</span>
+<span class="c-teal">b4c2d1e HEAD@{1}: commit: Add payment module</span>
+<span class="c-teal">c5d3e2f HEAD@{2}: commit: Fix session handling</span>
+<span class="c-teal">d6e4f3a HEAD@{3}: checkout: moving from feature/x to main</span>
+
+<span class="c-gray"># Recover the "lost" commit by creating a branch at it</span>
+<span class="c-green">git switch -c recovery-branch b4c2d1e</span>
+
+<span class="c-gray"># Or reset your current branch to that point</span>
+<span class="c-green">git reset --hard b4c2d1e</span>
+
+<span class="c-gray"># Accidentally deleted a branch?</span>
+<span class="c-gray"># Find the last commit that was on that branch in reflog, then:</span>
+<span class="c-green">git switch -c restored-branch &lt;hash&gt;</span></pre>
+          <div class="tip-box">Git keeps deleted commits in its database for ~30 days before garbage collection. The reflog is your window into that. Use it calmly — you're almost certainly not actually out of luck.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADVANCED -->
+    <section class="section" id="advanced">
+      <span class="section-tag tag-advanced">05 — Advanced Power Commands</span>
+      <h2>Advanced Git — Power User Level</h2>
+      <p class="section-desc">These are the commands that differentiate mid-level from senior developers. Use them with precision.</p>
+
+      <div class="scenario" id="s-rebase-i">
+        <div class="scenario-header" onclick="toggle(this)">
+          <div class="scenario-icon">✂️</div>
+          <div>
+            <div class="scenario-title">Situation: Your commit history is a mess before opening a PR</div>
+            <div class="scenario-subtitle">WIP commits, typo fixes, "argh" messages — clean it all up with interactive rebase.</div>
+          </div>
+          <div class="scenario-toggle">▾</div>
+        </div>
+        <div class="scenario-body">
+<pre><span class="c-gray"># Your ugly history before clean-up:</span>
+<span class="c-red">wip</span>
+<span class="c-red">fix typo</span>
+<span class="c-red">fix typo again</span>
+<span class="c-red">maybe working now?</span>
+<span class="c-yellow">Add user authentication</span>
+
+<span class="c-gray"># Interactively edit the last 5 commits:</span>
+<span class="c-green">git rebase -i HEAD~5</span>
+
+<span class="c-gray"># Editor opens — change pick to squash/fixup/reword:</span>
+<span class="c-blue">pick  a3f2b1c Add user authentication</span>
+<span class="c-yellow">squash b4c2d1e maybe working now?</span>    <span class="c-gray"># merge into above</span>
+<span class="c-yellow">fixup  c5d3e2f fix typo again</span>         <span class="c-gray"># merge, discard message</span>
+<span class="c-yellow">fixup  d6e4f3a fix typo</span>              <span class="c-gray"># merge, discard message</span>
+<span class="c-yellow">fixup  e7f5a4b wip</span>                   <span class="c-gray"># merge, discard message</span>
+
+<span class="c-gray"># Result: ONE clean commit "Add user authentication"</span>
+<span class="c-gray"># Then force-push your personal branch:</span>
+<span class="c-blue">git push --force-with-lease</span></pre>
+
+          <div style="margin-top:1rem;">
+            <p style="font-size:13px; color:var(--muted); margin-bottom:0.5rem;">Interactive rebase commands:</p>
+            <table class="rules-table">
+              <tr><th>Command</th><th>What it does</th></tr>
+              <tr><td><code>pick</code> / <code>p</code></td><td>Keep commit as-is</td></tr>
+              <tr><td><code>reword</code> / <code>r</code></td><td>Keep commit, edit message</td></tr>
+              <tr><td><code>squash</code> / <code>s</code></td><td>Merge into previous, combine messages</td></tr>
+              <tr><td><code>fixup</code> / <code>f</code></td><td>Merge into previous, discard this message</td></tr>
+              <tr><td><code>drop</code> / <code>d</code></td><td>Delete this commit entirely</td></tr>
+              <tr><td><code>edit</code> / <code>e</code></td><td>Pause here to amend the commit</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="scenario" id="s-cherry">
+        <div class="scenario-header" onclick="toggle(this)">
+          <div class="scenario-icon">🍒</div>
+          <div>
+            <div class="scenario-title">Situation: A fix on a feature branch is urgently needed on main</div>
+            <div class="scenario-subtitle">Cherry-pick copies a specific commit to another branch without merging the whole branch.</div>
+          </div>
+          <div class="scenario-toggle">▾</div>
+        </div>
+        <div class="scenario-body">
+<pre><span class="c-gray"># Scenario: bug fix committed to feature/payments</span>
+<span class="c-gray"># You need ONLY that fix on main, not the whole feature</span>
+
+<span class="c-gray"># 1. Find the commit hash you want</span>
+<span class="c-yellow">git log feature/payments --oneline</span>
+<span class="c-gray"># b4c2d1e Fix divide-by-zero in price calculation  &lt;-- this one</span>
+<span class="c-gray"># a3f2b1c Add new payment gateway (not ready yet)</span>
+
+<span class="c-gray"># 2. Switch to main and cherry-pick that exact commit</span>
+<span class="c-green">git switch main</span>
+<span class="c-green">git cherry-pick b4c2d1e</span>
+
+<span class="c-gray"># That commit is now on main as a new commit (new hash)</span>
+<span class="c-gray"># The feature branch is unaffected</span>
+
+<span class="c-gray"># Cherry-pick multiple commits:</span>
+<span class="c-green">git cherry-pick a3f2b1c b4c2d1e c5d3e2f</span>
+
+<span class="c-gray"># Cherry-pick a range:</span>
+<span class="c-green">git cherry-pick a3f2b1c..c5d3e2f</span></pre>
+        </div>
+      </div>
+
+      <div class="scenario" id="s-tags">
+        <div class="scenario-header" onclick="toggle(this)">
+          <div class="scenario-icon">🏷️</div>
+          <div>
+            <div class="scenario-title">Situation: Releasing a version to production</div>
+            <div class="scenario-subtitle">Tags mark releases permanently. Every production deployment should be tagged.</div>
+          </div>
+          <div class="scenario-toggle">▾</div>
+        </div>
+        <div class="scenario-body">
+<pre><span class="c-gray"># Semantic versioning: MAJOR.MINOR.PATCH</span>
+<span class="c-gray"># PATCH: bug fix (1.0.0 → 1.0.1)</span>
+<span class="c-gray"># MINOR: new feature, backwards compatible (1.0.0 → 1.1.0)</span>
+<span class="c-gray"># MAJOR: breaking change (1.0.0 → 2.0.0)</span>
+
+<span class="c-gray"># Create an annotated tag (always use annotated, not lightweight)</span>
+<span class="c-green">git tag -a v1.2.0 -m "Release v1.2.0: Add payment module, fix auth bug"</span>
+
+<span class="c-gray"># Tags are NOT pushed by default — you must push explicitly</span>
+<span class="c-blue">git push origin v1.2.0</span>
+<span class="c-blue">git push origin --tags</span>  <span class="c-gray"># push ALL tags</span>
+
+<span class="c-gray"># List all tags</span>
+<span class="c-yellow">git tag</span>
+<span class="c-yellow">git tag -l "v1.*"</span>  <span class="c-gray"># filter by pattern</span>
+
+<span class="c-gray"># Go back to exactly how the code was at v1.1.0</span>
+<span class="c-yellow">git checkout v1.1.0</span>  <span class="c-gray"># detached HEAD — use to inspect only</span>
+
+<span class="c-gray"># Delete a tag (use carefully — others may have pulled it)</span>
+<span class="c-red">git tag -d v1.2.0</span>
+<span class="c-red">git push origin --delete v1.2.0</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHEAT SHEET -->
+    <section class="section" id="cheatsheet">
+      <span class="section-tag tag-workflow">06 — Quick Reference</span>
+      <h2>Professional Cheat Sheet</h2>
+      <p class="section-desc">The commands you'll use every day — organized by category.</p>
+
+      <div class="cheat-grid">
+        <div class="cheat-card">
+          <h4>DAILY FLOW</h4>
+          <pre><span class="c-green">git status</span>
+<span class="c-green">git diff</span>
+<span class="c-green">git diff --staged</span>
+<span class="c-teal">git add -p</span>           <span class="c-gray"># selective staging</span>
+<span class="c-teal">git commit</span>
+<span class="c-blue">git push</span>
+<span class="c-blue">git pull --rebase</span>    <span class="c-gray"># pull cleanly</span></pre>
+        </div>
+        <div class="cheat-card">
+          <h4>BRANCHING</h4>
+          <pre><span class="c-green">git switch -c name</span>   <span class="c-gray"># create + switch</span>
+<span class="c-green">git switch main</span>
+<span class="c-yellow">git branch -v</span>        <span class="c-gray"># list with info</span>
+<span class="c-yellow">git branch -d name</span>   <span class="c-gray"># delete (safe)</span>
+<span class="c-red">git branch -D name</span>   <span class="c-gray"># delete (force)</span>
+<span class="c-teal">git merge feature/x</span>
+<span class="c-teal">git rebase main</span></pre>
+        </div>
+        <div class="cheat-card">
+          <h4>HISTORY & INSPECTION</h4>
+          <pre><span class="c-green">git log --oneline --graph</span>
+<span class="c-green">git log --author="Name"</span>
+<span class="c-yellow">git show &lt;hash&gt;</span>
+<span class="c-yellow">git blame file.py</span>    <span class="c-gray"># who wrote each line</span>
+<span class="c-blue">git reflog</span>           <span class="c-gray"># emergency recovery</span>
+<span class="c-teal">git diff main..feature</span></pre>
+        </div>
+        <div class="cheat-card">
+          <h4>UNDO & RECOVERY</h4>
+          <pre><span class="c-green">git restore --staged f</span>  <span class="c-gray"># unstage</span>
+<span class="c-green">git restore file</span>         <span class="c-gray"># discard changes</span>
+<span class="c-yellow">git reset --soft HEAD~1</span>  <span class="c-gray"># undo commit</span>
+<span class="c-teal">git revert &lt;hash&gt;</span>        <span class="c-gray"># safe public undo</span>
+<span class="c-red">git reset --hard HEAD~1</span>  <span class="c-gray"># DESTRUCTIVE</span>
+<span class="c-blue">git stash / stash pop</span></pre>
+        </div>
+        <div class="cheat-card">
+          <h4>REMOTE OPERATIONS</h4>
+          <pre><span class="c-green">git remote -v</span>
+<span class="c-green">git fetch origin</span>
+<span class="c-yellow">git push -u origin branch</span>
+<span class="c-yellow">git push --force-with-lease</span>
+<span class="c-blue">git clone &lt;url&gt;</span>
+<span class="c-blue">git remote add upstream &lt;url&gt;</span></pre>
+        </div>
+        <div class="cheat-card">
+          <h4>ADVANCED</h4>
+          <pre><span class="c-green">git rebase -i HEAD~N</span>    <span class="c-gray"># clean history</span>
+<span class="c-green">git cherry-pick &lt;hash&gt;</span>
+<span class="c-yellow">git bisect start</span>        <span class="c-gray"># find bug by binary search</span>
+<span class="c-yellow">git tag -a v1.0.0 -m ""</span>
+<span class="c-blue">git commit --amend</span>
+<span class="c-blue">git merge --abort</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- TEAM RULES -->
+    <section class="section" id="rules">
+      <span class="section-tag tag-team">07 — Team Rules</span>
+      <h2>The Unbreakable Rules of Professional Git</h2>
+      <p class="section-desc">These aren't suggestions. Violating them in a team environment causes real damage.</p>
+
+      <ul class="rule-list">
+        <li><div class="rule-dot"></div><div><span class="badge badge-no">NEVER</span> Commit secrets to Git. API keys, passwords, .env files. Even if deleted later — history is forever.</div></li>
+        <li><div class="rule-dot"></div><div><span class="badge badge-no">NEVER</span> Force-push to main, develop, or any shared branch. You rewrite history for everyone.</div></li>
+        <li><div class="rule-dot"></div><div><span class="badge badge-no">NEVER</span> Work directly on main. Every change goes through a branch and a PR.</div></li>
+        <li><div class="rule-dot"></div><div><span class="badge badge-no">NEVER</span> Rebase commits that are already on a shared remote and pulled by others.</div></li>
+        <li><div class="rule-dot"></div><div><span class="badge badge-ok">ALWAYS</span> Pull before you start working. Don't start the day on a stale codebase.</div></li>
+        <li><div class="rule-dot"></div><div><span class="badge badge-ok">ALWAYS</span> Write meaningful commit messages. Your message is documentation read by future humans.</div></li>
+        <li><div class="rule-dot"></div><div><span class="badge badge-ok">ALWAYS</span> Keep branches short-lived. A branch open for 2 weeks is a conflict waiting to happen.</div></li>
+        <li><div class="rule-dot"></div><div><span class="badge badge-ok">ALWAYS</span> Tag every production release. Semantic versioning, annotated tags, pushed to remote.</div></li>
+        <li><div class="rule-dot"></div><div><span class="badge badge-ok">ALWAYS</span> Commit node_modules / .venv / build artifacts to .gitignore, never to the repo.</div></li>
+        <li><div class="rule-dot"></div><div><span class="badge badge-caution">CAUTION</span> git reset --hard destroys uncommitted work. Verify twice before using it.</div></li>
+        <li><div class="rule-dot"></div><div><span class="badge badge-caution">CAUTION</span> git push --force is almost always wrong. Use --force-with-lease if you must force-push your own branch.</div></li>
+      </ul>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  function toggle(header) {
+    const scenario = header.parentElement;
+    scenario.classList.toggle('open');
+  }
+
+  document.querySelectorAll('.sidebar-link, .nav-pill').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const id = e.target.id;
+        document.querySelectorAll('.sidebar-link').forEach(l => {
+          l.classList.toggle('active', l.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { threshold: 0.3 });
+
+  document.querySelectorAll('.scenario[id]').forEach(s => observer.observe(s));
+</script>
+
+<footer style="text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--muted); margin-top: 2rem;">
+  <p>&copy; 2024 Professional Git & GitHub — Team Workflow Mastery. Developed by Arun Pandey Laudari.</p>
+</footer>
+</body>
+</html>
