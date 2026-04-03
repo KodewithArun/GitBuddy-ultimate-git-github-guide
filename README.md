@@ -1,17 +1,15 @@
-# GitBuddy - Ultimate Git & GitHub Guide
+Professional Git & GitHub — Team Workflow Mastery
 
-**Professional Git & GitHub — Team Workflow Mastery**
+Live Site: https://tinyurl.com/gitbuddy-arun
 
-A comprehensive, interactive single-page guide designed to help developers master Git and GitHub workflows for professional team environments. 
+Main Goal:
+To provide a clear guide for team workflow mastery that focuses on real-world situations and professional protocols for developers working with Git and GitHub.
 
-## Features
-* **Interactive Layout:** Single-page guide with smooth scrolling and a sidebar utilizing intersection observers to highlight your current reading position.
-* **Responsive Design:** Custom dark-themed UI that adapts perfectly to mobile, tablet, and desktop screens.
-* **Real-world Scenarios:** Covers practical, day-to-day situations and professional protocols for version control.
-* **Cheat Sheets:** Quick reference for common Git commands, branching strategies, and workflow rules.
+What this project has:
+Based on the guide, it includes practical instructions, scenarios, and cheat sheets for:
+- Setup
+- Daily Work
+- Branching
+- Professional protocols for version control
 
-## Usage
-Simply clone the repository and open the `index.html` file in any modern web browser to view the guide. No installation or build steps required.
-
-## Author
-Developed by **Arun Pandey Laudari**.
+Developed by Arun Pandey Laudari.
